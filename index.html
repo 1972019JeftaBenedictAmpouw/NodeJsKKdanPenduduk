@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Penduduk dan Kartu Keluarga</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Manajemen Penduduk dan Kartu Keluarga</h1>
+
+    <form id="formTambahPenduduk" action="/tambah-penduduk" method="post">
+        <div class="form-group">
+            <input type="text" class="form-control" name="namaPenduduk" placeholder="Nama Penduduk" required>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="nomorKeluarga" placeholder="Nomor Kartu Keluarga" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Tambah</button>
+    </form>
+
+    <table class="table" id="tablePenduduk">
+        <thead>
+        <tr>
+            <th scope="col">Nama Penduduk</th>
+            <th scope="col">Nomor Kartu Keluarga</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var formTambahPenduduk = document.getElementById('formTambahPenduduk');
+        formTambahPenduduk.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var namaPenduduk = this.querySelector('[name=namaPenduduk]').value;
+            var nomorKeluarga = this.querySelector('[name=nomorKeluarga]').value;
+
+            fetch('/tambah-penduduk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    namaPenduduk: namaPenduduk,
+                    nomorKeluarga: nomorKeluarga
+                })
+            })
+                .then(response => response.json()) // Menguraikan respons JSON
+                .then(data => tambahkanDataKeTabel(data));
+        });
+
+        function tambahkanDataKeTabel(data) {
+            var tbody = document.querySelector('#tablePenduduk tbody');
+            var row = document.createElement('tr');
+            var cellNama = document.createElement('td');
+            var cellKeluarga = document.createElement('td');
+            cellNama.textContent = data.nama;
+            cellKeluarga.textContent = data.keluarga;
+            row.appendChild(cellNama);
+            row.appendChild(cellKeluarga);
+            tbody.appendChild(row);
+        }
+    });
+</script>
+
+</body>
+</html>
